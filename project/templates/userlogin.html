@@ -1,0 +1,38 @@
+{% extends 'baselogin.html' %}
+{% block title %} User Login{% endblock title %}
+{% block form %}
+<h2>Login </h2>
+
+<div class="row">
+<div class="col-md-4"></div>
+
+<div class="col-md-4">
+
+
+<form action="/login" method="post">
+
+{% include "message.html" %}
+
+<div class="form-group">
+<input type="text" class="form-control mt-2" placeholder="Enter  SRF ID" name="srf" required>
+</div>
+
+
+<div class="form-group">
+<input type="date" class="form-control mt-2" placeholder="Enter  DOB" name="dob" required>
+</div>
+<br>
+<button type="submit" class="btn btn-info">Login</button>
+
+</form>
+
+<a class="text-dark" href="/signup">New User? Signup </a>
+</div>
+
+
+<div class="col-md-4"></div>
+
+</div>
+
+
+{% endblock form %}

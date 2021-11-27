@@ -1,0 +1,132 @@
+{% extends "navbar.html" %} {% block title %} Slot Booking {% endblock title %}
+{% block body %}
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<div class="container mt-4">
+  <div class="display-4 text-center text-info">Book Bed Slot</div>
+  <br />
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        {% include "message.html" %}
+        <h4 class="text-center text-success">Covid Care Center</h4>
+        <div class="card-body bg-light">
+          <form action="/slotbooking" method="post">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control mt-2"
+                name="srfid"
+                value="{{current_user.srfid}}"
+                readonly
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <select id="bedtype" name="bedtype" class="form-control" required>
+                <option selected>Choose Bed Type</option>
+                <option value="NormalBed">Normal Bed</option>
+                <option value="HICUBed">HICU Bed</option>
+                <option value="ICUBed">ICU Bed</option>
+                <option value="VENTILATORBed">VENTILATOR Bed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control mt-2"
+                name="hcode"
+                placeholder="Enter Hospital Code"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="number"
+                class="form-control mt-2"
+                name="spo2"
+                placeholder="Oxygen Level "
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control mt-2"
+                name="pname"
+                placeholder="Patient Name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control mt-2"
+                name="pphone"
+                placeholder="Patient Phone Number"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control mt-2"
+                name="paddress"
+                placeholder="Patient Address"
+                required
+              />
+            </div>
+
+            <br />
+            <button class="btn btn-info" type="submit">Book Slot</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-8">
+    
+    <table class="table table-dark">
+  <thead>
+  <h3 class="text-center text-white bg-dark">Available Beds</h3>
+    <tr>
+      
+      <th scope="col">Hospital Code</th>
+      <th scope="col">Hospital Name</th>
+      <th scope="col">Normal Bed</th>
+      <th scope="col">HICU Bed</th>
+      <th scope="col">I.C.U Bed</th>
+      <th scope="col">Ventilator Bed</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for post in query %}
+   <tr>
+      <td>{{post.hcode}}</td>
+      <td>{{post.hname}}</td>
+      <td>{{post.normalbed}}</td>
+      <td>{{post.hicubed}}</td>
+      <td>{{post.icubed}}</td>
+      <td>{{post.vbed}}</td>
+    </tr>
+   
+  {% endfor %}
+   
+  </tbody>
+</table>
+    
+    </div>
+  </div>
+</div>
+
+{% endblock body %}

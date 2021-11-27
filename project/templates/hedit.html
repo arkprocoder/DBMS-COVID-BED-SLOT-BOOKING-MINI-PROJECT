@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Hospital Edit</title>
+ 
+</head>
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<body>
+
+ 
+
+<div class="container mt-4">
+  <div class="display-4 text-center text-info">Update Hospital Data</div>
+  <br />
+  <div class="row">
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4">
+      <div class="card">
+        {% include "message.html" %}
+        <h4 class="text-center text-success">Covid Care Center</h4>
+        <div class="card-body bg-light">
+
+          <form action="/hedit/{{posts.id}}" method="post">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control mt-2"
+                name="hcode"
+                value={{posts.hcode}}
+                placeholder="Enter the Hospital Code"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control mt-2"
+                name="hname"
+                value={{posts.hname}}
+                placeholder="Enter Hospital Name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="number"
+                class="form-control mt-2"
+                name="normalbed"
+                placeholder="Normal Bed Available?"
+               value={{posts.normalbed}}
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="number"
+                class="form-control mt-2"
+                name="hicubeds"
+                value={{posts.hicubed}}
+                placeholder="H.I.C.U Bed Available?"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="number"
+                class="form-control mt-2"
+                name="icubeds"
+                value={{posts.icubed}}
+                placeholder="I.C.U Bed Available?"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="number"
+                class="form-control mt-2"
+                name="ventbeds"
+                value={{posts.vbed}}
+                placeholder="Ventilators Bed Available?"
+                required
+              />
+            </div>
+
+            <br />
+            <button class="btn btn-info" type="submit">Update</button>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+
+    
+
+
+</div>
+
+
+
+ 
+
+</body>
+
+</html>
