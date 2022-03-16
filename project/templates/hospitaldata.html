@@ -24,7 +24,9 @@ Add Hospital Information
                 <form action="/addhospitalinfo" method="post">
 
                     <div class="form-group">
-                        <input type="text" class="form-control mt-2" name="hcode" placeholder="Enter the Hospital Code" required>
+                        <input type="text" class="form-control mt-2" name="hcode" 
+                        value="{{current_user.hcode}} "
+                        placeholder="Enter the Hospital Code" required >
                     </div>
 
                     <div class="form-group">
