@@ -22,11 +22,11 @@ Add Hospital Information
             <div class="card-body bg-light">
 
                 <form action="/addhospitalinfo" method="post">
-
+                    <Center>Hospital Code : {{current_user.hcode}}</Center>
                     <div class="form-group">
                         <input type="text" class="form-control mt-2" name="hcode" 
-                        value="{{current_user.hcode}} "
-                        placeholder="Enter the Hospital Code" required >
+                        value="{{current_user.hcode}}"
+                        placeholder="Enter the Hospital Code" required hidden>
                     </div>
 
                     <div class="form-group">

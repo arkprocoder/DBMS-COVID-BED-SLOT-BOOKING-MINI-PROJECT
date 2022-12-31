@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 
 from flask_login import login_required,logout_user,login_user,login_manager,LoginManager,current_user
 
-from flask_mail import Mail
+# from flask_mail import Mail
 import json
 
 
@@ -22,14 +22,14 @@ with open('config.json','r') as c:
 
 
 
-app.config.update(
-    MAIL_SERVER='smtp.gmail.com',
-    MAIL_PORT='465',
-    MAIL_USE_SSL=True,
-    MAIL_USERNAME=params['gmail-user'],
-    MAIL_PASSWORD=params['gmail-password']
-)
-mail = Mail(app)
+# app.config.update(
+#     MAIL_SERVER='smtp.gmail.com',
+#     MAIL_PORT='465',
+#     MAIL_USE_SSL=True,
+#     MAIL_USERNAME=params['gmail-user'],
+#     MAIL_PASSWORD=params['gmail-password']
+# )
+# mail = Mail(app)
 
 
 
@@ -169,7 +169,7 @@ def admin():
     if request.method=="POST":
         username=request.form.get('username')
         password=request.form.get('password')
-        if(username==params['user'] and password==params['password']):
+        if(username=="admin" and password=="admin"):
             session['user']=username
             flash("login success","info")
             return render_template("addHosUser.html")
@@ -190,7 +190,7 @@ def logout():
 @app.route('/addHospitalUser',methods=['POST','GET'])
 def hospitalUser():
    
-    if('user' in session and session['user']==params['user']):
+    if('user' in session and session['user']=="admin"):
       
         if request.method=="POST":
             hcode=request.form.get('hcode')
@@ -206,10 +206,11 @@ def hospitalUser():
 
             # my mail starts from here if you not need to send mail comment the below line
            
-            mail.send_message('COVID CARE CENTER',sender=params['gmail-user'],recipients=[email],body=f"Welcome thanks for choosing us\nYour Login Credentials Are:\n Email Address: {email}\nPassword: {password}\n\nHospital Code {hcode}\n\n Do not share your password\n\n\nThank You..." )
+            # mail.send_message('COVID CARE CENTER',sender=params['gmail-user'],recipients=[email],body=f"Welcome thanks for choosing us\nYour Login Credentials Are:\n Email Address: {email}\nPassword: {password}\n\nHospital Code {hcode}\n\n Do not share your password\n\n\nThank You..." )
 
             flash("Data Sent and Inserted Successfully","warning")
             return render_template("addHosUser.html")
+
     else:
         flash("Login and try Again","warning")
         return render_template("addHosUser.html")
@@ -235,6 +236,10 @@ def logoutadmin():
     return redirect('/admin')
 
 
+def updatess(code):
+    postsdata=Hospitaldata.query.filter_by(hcode=code).first()
+    return render_template("hospitaldata.html",postsdata=postsdata)
+
 @app.route("/addhospitalinfo",methods=['POST','GET'])
 def addhospitalinfo():
     email=current_user.email
@@ -258,8 +263,12 @@ def addhospitalinfo():
         if huser:            
             db.engine.execute(f"INSERT INTO `hospitaldata` (`hcode`,`hname`,`normalbed`,`hicubed`,`icubed`,`vbed`) VALUES ('{hcode}','{hname}','{nbed}','{hbed}','{ibed}','{vbed}')")
             flash("Data Is Added","primary")
+            return redirect('/addhospitalinfo')
+            
+
         else:
             flash("Hospital Code not Exist","warning")
+            return redirect('/addhospitalinfo')
 
 
 
@@ -302,16 +311,16 @@ def pdetails():
     code=current_user.srfid
     print(code)
     data=Bookingpatient.query.filter_by(srfid=code).first()
-   
-    
     return render_template("detials.html",data=data)
 
 
 @app.route("/slotbooking",methods=['POST','GET'])
 @login_required
 def slotbooking():
+    query1=db.engine.execute(f"SELECT * FROM `hospitaldata` ")
     query=db.engine.execute(f"SELECT * FROM `hospitaldata` ")
     if request.method=="POST":
+        
         srfid=request.form.get('srfid')
         bedtype=request.form.get('bedtype')
         hcode=request.form.get('hcode')
@@ -320,8 +329,14 @@ def slotbooking():
         pphone=request.form.get('pphone')
         paddress=request.form.get('paddress')  
         check2=Hospitaldata.query.filter_by(hcode=hcode).first()
+        checkpatient=Bookingpatient.query.filter_by(srfid=srfid).first()
+        if checkpatient:
+            flash("already srd id is registered ","warning")
+            return render_template("booking.html",query=query,query1=query1)
+        
         if not check2:
             flash("Hospital Code not exist","warning")
+            return render_template("booking.html",query=query,query1=query1)
 
         code=hcode
         dbb=db.engine.execute(f"SELECT * FROM `hospitaldata` WHERE `hospitaldata`.`hcode`='{code}' ")        
@@ -361,15 +376,22 @@ def slotbooking():
             pass
 
         check=Hospitaldata.query.filter_by(hcode=hcode).first()
-        if(seat>0 and check):
-            res=Bookingpatient(srfid=srfid,bedtype=bedtype,hcode=hcode,spo2=spo2,pname=pname,pphone=pphone,paddress=paddress)
-            db.session.add(res)
-            db.session.commit()
-            flash("Slot is Booked kindly Visit Hospital for Further Procedure","success")
+        if check!=None:
+            if(seat>0 and check):
+                res=Bookingpatient(srfid=srfid,bedtype=bedtype,hcode=hcode,spo2=spo2,pname=pname,pphone=pphone,paddress=paddress)
+                db.session.add(res)
+                db.session.commit()
+                flash("Slot is Booked kindly Visit Hospital for Further Procedure","success")
+                return render_template("booking.html",query=query,query1=query1)
+            else:
+                flash("Something Went Wrong","danger")
+                return render_template("booking.html",query=query,query1=query1)
         else:
-            flash("Something Went Wrong","danger")
+            flash("Give the proper hospital Code","info")
+            return render_template("booking.html",query=query,query1=query1)
+            
     
-    return render_template("booking.html",query=query)
+    return render_template("booking.html",query=query,query1=query1)
 
 
 

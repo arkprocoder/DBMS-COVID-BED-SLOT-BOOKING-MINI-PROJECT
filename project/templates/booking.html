@@ -38,13 +38,14 @@
             </div>
 
             <div class="form-group">
-              <input
-                type="text"
-                class="form-control mt-2"
-                name="hcode"
-                placeholder="Enter Hospital Code"
-                required
-              />
+              <small> Select hospitalcode by looking the availablity of beds in table right side</small>
+              <select id="hcode" name="hcode" class="form-control" required>
+                <option value="none">Select Hospital Code </option>
+               {% for i in query1 %}
+               
+               <option value="{{i.hcode}}">{{i.hcode}}</option>
+               
+               {% endfor %}
             </div>
             <div class="form-group">
               <input
