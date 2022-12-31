@@ -17,8 +17,8 @@ app=Flask(__name__)
 app.secret_key="aneesrehmankhan"
 
 
-with open('config.json','r') as c:
-    params=json.load(c)["params"]
+# with open('config.json','r') as c:
+#     params=json.load(c)["params"]
 
 
 
@@ -26,8 +26,8 @@ with open('config.json','r') as c:
 #     MAIL_SERVER='smtp.gmail.com',
 #     MAIL_PORT='465',
 #     MAIL_USE_SSL=True,
-#     MAIL_USERNAME=params['gmail-user'],
-#     MAIL_PASSWORD=params['gmail-password']
+#     MAIL_USERNAME='gmail account',
+#     MAIL_PASSWORD='gmail account password'
 # )
 # mail = Mail(app)
 
