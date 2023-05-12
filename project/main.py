@@ -121,7 +121,10 @@ def signup():
         if user or emailUser:
             flash("Email or srif is already taken","warning")
             return render_template("usersignup.html")
-        new_user=db.engine.execute(f"INSERT INTO `user` (`srfid`,`email`,`dob`) VALUES ('{srfid}','{email}','{encpassword}') ")
+        # new_user=db.engine.execute(f"INSERT INTO `user` (`srfid`,`email`,`dob`) VALUES ('{srfid}','{email}','{encpassword}') ")
+        new_user=User(srfid=srfid,email=email,dob=dob)
+        db.session.add(new_user)
+        db.session.commit()
                 
         flash("SignUp Success Please Login","success")
         return render_template("userlogin.html")
@@ -202,7 +205,10 @@ def hospitalUser():
             if  emailUser:
                 flash("Email or srif is already taken","warning")
          
-            db.engine.execute(f"INSERT INTO `hospitaluser` (`hcode`,`email`,`password`) VALUES ('{hcode}','{email}','{encpassword}') ")
+            # db.engine.execute(f"INSERT INTO `hospitaluser` (`hcode`,`email`,`password`) VALUES ('{hcode}','{email}','{encpassword}') ")
+            query=Hospitaluser(hcode=hcode,email=email,password=encpassword)
+            db.session.add(query)
+            db.session.commit()
 
             # my mail starts from here if you not need to send mail comment the below line
            
@@ -261,7 +267,10 @@ def addhospitalinfo():
             flash("Data is already Present you can update it..","primary")
             return render_template("hospitaldata.html")
         if huser:            
-            db.engine.execute(f"INSERT INTO `hospitaldata` (`hcode`,`hname`,`normalbed`,`hicubed`,`icubed`,`vbed`) VALUES ('{hcode}','{hname}','{nbed}','{hbed}','{ibed}','{vbed}')")
+            # db.engine.execute(f"INSERT INTO `hospitaldata` (`hcode`,`hname`,`normalbed`,`hicubed`,`icubed`,`vbed`) VALUES ('{hcode}','{hname}','{nbed}','{hbed}','{ibed}','{vbed}')")
+            query=Hospitaldata(hcode=hcode,hname=hname,normalbed=nbed,hicubed=hbed,icubed=ibed,vbed=vbed)
+            db.session.add(query)
+            db.session.commit()
             flash("Data Is Added","primary")
             return redirect('/addhospitalinfo')
             
@@ -289,7 +298,15 @@ def hedit(id):
         ibed=request.form.get('icubeds')
         vbed=request.form.get('ventbeds')
         hcode=hcode.upper()
-        db.engine.execute(f"UPDATE `hospitaldata` SET `hcode` ='{hcode}',`hname`='{hname}',`normalbed`='{nbed}',`hicubed`='{hbed}',`icubed`='{ibed}',`vbed`='{vbed}' WHERE `hospitaldata`.`id`={id}")
+        # db.engine.execute(f"UPDATE `hospitaldata` SET `hcode` ='{hcode}',`hname`='{hname}',`normalbed`='{nbed}',`hicubed`='{hbed}',`icubed`='{ibed}',`vbed`='{vbed}' WHERE `hospitaldata`.`id`={id}")
+        post=Hospitaldata.query.filter_by(id=id).first()
+        post.hcode=hcode
+        post.hname=hname
+        post.normalbed=nbed
+        post.hicubed=hbed
+        post.icubed=ibed
+        post.vbed=vbed
+        db.session.commit()
         flash("Slot Updated","info")
         return redirect("/addhospitalinfo")
 
@@ -300,7 +317,10 @@ def hedit(id):
 @app.route("/hdelete/<string:id>",methods=['POST','GET'])
 @login_required
 def hdelete(id):
-    db.engine.execute(f"DELETE FROM `hospitaldata` WHERE `hospitaldata`.`id`={id}")
+    # db.engine.execute(f"DELETE FROM `hospitaldata` WHERE `hospitaldata`.`id`={id}")
+    post=Hospitaldata.query.filter_by(id=id).first()
+    db.session.delete(post)
+    db.session.commit()
     flash("Date Deleted","danger")
     return redirect("/addhospitalinfo")
 
@@ -317,8 +337,10 @@ def pdetails():
 @app.route("/slotbooking",methods=['POST','GET'])
 @login_required
 def slotbooking():
-    query1=db.engine.execute(f"SELECT * FROM `hospitaldata` ")
-    query=db.engine.execute(f"SELECT * FROM `hospitaldata` ")
+    # query1=db.engine.execute(f"SELECT * FROM `hospitaldata` ")
+    # query=db.engine.execute(f"SELECT * FROM `hospitaldata` ")
+    query1=Hospitaldata.query.all()
+    query=Hospitaldata.query.all()
     if request.method=="POST":
         
         srfid=request.form.get('srfid')
@@ -339,7 +361,8 @@ def slotbooking():
             return render_template("booking.html",query=query,query1=query1)
 
         code=hcode
-        dbb=db.engine.execute(f"SELECT * FROM `hospitaldata` WHERE `hospitaldata`.`hcode`='{code}' ")        
+        # dbb=db.engine.execute(f"SELECT * FROM `hospitaldata` WHERE `hospitaldata`.`hcode`='{code}' ")  
+        dbb=Hospitaldata.query.filter_by(hcode=hcode).first()      
         bedtype=bedtype
         if bedtype=="NormalBed":       
             for d in dbb:
