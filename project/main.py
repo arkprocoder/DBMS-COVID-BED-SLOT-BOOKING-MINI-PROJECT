@@ -138,7 +138,7 @@ def login():
         srfid=request.form.get('srf')
         dob=request.form.get('dob')
         user=User.query.filter_by(srfid=srfid).first()
-        if user and check_password_hash(user.dob,dob):
+        if user and user.dob=dob:
             login_user(user)
             flash("Login Success","info")
             return render_template("index.html")
@@ -156,7 +156,7 @@ def hospitallogin():
         password=request.form.get('password')
         user=Hospitaluser.query.filter_by(email=email).first()
         #if user and check_password_hash(user.password,password):
-        if user and password:
+        if user and user.password==password:
             login_user(user)
             flash("Login Success","info")
             return render_template("index.html")
@@ -200,14 +200,14 @@ def hospitalUser():
             hcode=request.form.get('hcode')
             email=request.form.get('email')
             password=request.form.get('password')        
-            encpassword=generate_password_hash(password)  
+            #encpassword=generate_password_hash(password)  
             hcode=hcode.upper()      
             emailUser=Hospitaluser.query.filter_by(email=email).first()
             if  emailUser:
                 flash("Email or srif is already taken","warning")
          
             # db.engine.execute(f"INSERT INTO `hospitaluser` (`hcode`,`email`,`password`) VALUES ('{hcode}','{email}','{encpassword}') ")
-            query=Hospitaluser(hcode=hcode,email=email,password=encpassword)
+            query=Hospitaluser(hcode=hcode,email=email,password=password)
             db.session.add(query)
             db.session.commit()
 
